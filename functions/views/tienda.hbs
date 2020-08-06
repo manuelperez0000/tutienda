@@ -1,0 +1,56 @@
+<style>
+    nav{
+        background-color: rgba(0, 0, 0, 0.377);
+    }
+    .cuerpo{
+        margin-top:100px ;
+        background-color: red;
+    }
+</style>
+<div class="cuerpo container-fluid bg-light py-5 mt-5">
+  <div class="row">
+    <div class="col-12">
+      Link de mi tienda:<div id="link"></div>
+    </div>
+    <div class="col-sm-8 col-md-6 bg-white py-4 px-3 mt-2 rounded">
+      
+      <h3>Nombre de la tienda</h3>
+      <div class="input-group">
+        <input type="text" id="nombre_tienda" class="form-control" placeholder="Agregar nombre" aria-describedby="button-addon2">
+        <div class="input-group-append">
+          <button onclick="agregar_nombre()" class="btn btn-success" type="button" id="button-addon2">Guardar</button>
+        </div>
+      </div>
+
+      <h3 class="mt-4" >Url unico</h3>
+      <div class="input-group">
+        <p>elige un nombre amigable sin espacios ni caracteres especiales, este sera usado para personalizar la url de tu tienda</p>
+        <input type="text" id="url_amigable" class="form-control" placeholder="verificar url's disponibles" id="validationServer01">
+        <div id="valid" class=""> 
+        </div>
+      </div>
+      <div id="boton_url">
+      </div>
+      
+      
+      <h3 class="mt-4">Banner</h3>
+      <p>Sube un banner para tu portada</p>
+      <div class="custom-file">
+        <input onchange="agregar_banner()" type="file" class="custom-file-input" id="banner" lang="es">
+        <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+      </div>
+      <div class="input-group my-3">
+        <div class="input-group-prepend" >
+          <span class="input-group-text" id="num_porcent">0%</span>
+        </div>
+          <progress class="form-control" id="uploader" value="0" max="100">0%</progress>
+      </div>
+      <div id="img_banner"></div>
+      <input type="hidden" id="uid_user">
+      <div class="continuar-btn py-3 px-2 mt-4 rounded">
+        <h3 class="mt-4 text-dark">Agrega un producto</h3>
+        <a class="btn btn-success" href="./productos.php">Continuar <i class="fas fa-arrow-right"></i> </a>
+      </div>
+    </div> <!--aqui todo el contenido de col-6 -->
+  </div>
+</div>

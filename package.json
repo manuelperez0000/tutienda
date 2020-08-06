@@ -1,0 +1,29 @@
+{
+  "name": "mrdelivery-app-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon functions/index.js",
+    "web": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.11.0",
+    "babel": "^6.23.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4",
+    "vue-loader": "^15.9.3",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}

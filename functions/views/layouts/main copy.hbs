@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tutienda</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="css/style.css" rel="stylesheet" media="screen">
+    <script src="https://kit.fontawesome.com/4ab87b7dce.js" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark mb-5">
+  <div class="container">
+    <a class="navbar-brand" href="/"><h3 class="text-white">TuTiendaEnLinea</h3></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        {{#if status}}
+            <li><p class="text-white my-1 mx-1">{{ uemail }}</p> </li>
+            <li> <a class="text-white my-1 btn mx-1 btn-primary" href="/tienda"><i class="fa fas-envelope"></i> Mi Tienda </a> </li>
+            <li> <a class="text-white my-1 btn mx-1 btn-primary" href="/logout">Salir</a> </li>
+        {{else}}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/login"> Ingresa</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/register">Registrate</a>
+          </li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+</nav>
+   {{{ body }}}
+    
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
+

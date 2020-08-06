@@ -1,0 +1,24 @@
+<style> 
+  body{
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.774) 30%,rgba(0, 0, 0, 0.781) 90%), url('../img/back.jpg');
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+</style>
+<div class="cover-backw">
+  <div class="container mt-5 pt-5">
+    <div class="row">
+      <div class="col-sm-5 p-3 rounded bg-semitransparent mx-3 m-4">
+        <form action="/register" method="POST" class=" text-white">
+          <h1 class="h3 mb-3 font-weight-normal">Registrate</h1>
+          <input type="text" id="nombre" name="nombre" class="form-control mb-3" placeholder="Nombre" required>
+          <input type="text" id="telefono" name="telefono" class="form-control mb-3" placeholder="Telefono" required>
+          <input type="email" id="email" name="email" class="form-control mb-3" placeholder="Correo" required autofocus>
+          <input type="password" id="password" name="password" class="form-control mb-3" placeholder="Contraseña" required>
+          <button class="btn btn-lg btn-primary btn-block mb-4" type="submit">Registrarme</button>
+        </form> 
+      </div>
+    </div>
+  </div>
+</div>
