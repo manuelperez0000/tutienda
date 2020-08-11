@@ -14,6 +14,7 @@ require("firebase/firestore");
 require("firebase/auth");
 require("firebase/storage");
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyDRSDPUDAaQZqLAtsJtRnex5uhKBqWb5vw",
   authDomain: "usuarios-b6168.firebaseapp.com",
@@ -28,6 +29,8 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 var stor = firebase.storage(); 
+
+
 
 router.get('/api/auth', (req, res)=>{ 
   if(auth.currentUser){
@@ -103,37 +106,84 @@ router.post('/api/register', (req, res)=>{
       telefono:telefono,
       correo:email
     }).then(()=>{
-      console.log("guardado con exito")
-      //guardar_tienda(id)
+      console.log("usuario guardado con exito")
+      guardar_tienda(id)
       res.json({estado:true, mensaje:"Guardado con exito"});
     }).catch(e => {
       console.log(e)
       res.json({estado:false,mensaje:"Ocurrio un error al guardar en la base de datos"});
     })
+
+    function guardar_tienda(id){
+      db.collection("tiendas").doc(id).set({
+        nombre:"",
+        urlUnico:"",
+        banner:""
+
+      }).then(()=>{
+        console.log("tienda guardad")
+        //guardar_tienda(id)
+        res.json({estado:true, mensaje:"Guardado con exito"});
+      }).catch(e => {
+        console.log(e)
+        res.json({estado:false,mensaje:"Ocurrio un error al guardar en la base de datos"});
+      })
+    }
   } 
 })
 
-router.get('/api/mitienda',(req,res)=>{
-  db.collection('tiendas').doc("123456").get()
+router.post('/api/mitienda',(req,res)=>{
+  var uid = req.body.uid
+  console.log(uid);
+   db.collection('tiendas').doc(uid).get()
   .then((doc)=>{
-    res.json({nombre:doc.data().nombre})
+    console.log(doc.id)
+    res.json({nombre:doc.data().nombre,urlunico:doc.data().urlunico})
   })
 })
 
-router.post('/api/guardartienda',(req,res)=>{
- /*  db.collection('tiendas').doc(auth.currentUser.id).set({
-    nombre:req.body.nombre
+router.post('/api/guardartienda/nombre',(req,res)=>{
+  var id = req.body.id
+  var nombre = req.body.nombre
+   db.collection('tiendas').doc(id).update({
+    nombre:nombre
   }).then(() =>{
-    res.json({mensaje:"Guardado con exito"})
+    res.json({nombre:nombre,"mensaje":"Guardado con exito","estado":true})
   })
-  .catch(err => res.json({mensaje:err.message})) */
-  res.json({mensaje:"guardando bien"})
+  .catch(err => res.json({nombre:null,"mensaje":err.message,"estado":false}))
 })
 
-router.get('/api/urlunico', (req,res)=>{
-db.collection('tiendas').where("urlunico","==",req.body.url)
-.then(()=> res.json({estado:true,mensaje:"disponible"}))
-.catch(err => res.json({estado:false,mensaje:err}))
+router.post('/api/guardartienda/url',(req,res)=>{
+  var id = req.body.id
+  var urlunico = req.body.urlunico
+  //res.json({id:id,urlunico:urlunico})
+   db.collection('tiendas').doc(id).update({
+    urlunico:urlunico
+  }).then(() =>{
+    res.json({mensaje:"Guardado con exito",estado:true})
+  })
+  .catch(err => res.json({mensaje:err.message,estado:false}))
+})
+
+router.post('/api/urlunico', (req,res)=>{
+  var url = req.body.url
+  db.collection("tiendas").get().then(function(querySnapshot) {
+    var y=0
+    querySnapshot.forEach(function(doc) {
+      if(url == doc.data().urlunico){
+       y++
+      }
+    })
+    res.json({i:y})
+  })
+  .catch(function(error) {
+      res.json({estado:false})
+      console.log("Error getting documents: ", error);
+  });
+
+  /* db.collection('').where("","==",)
+  .then(()=> res.json({estado:true,mensaje:"disponible"}))
+  .catch(err => res.json({estado:false,mensaje:err})) */
 })
 
 router.get('/:id', function (req, res) {

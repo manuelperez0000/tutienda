@@ -1,4 +1,4 @@
-//const functions = require('firebase-functions');
+const functions = require('firebase-functions');
 const express = require('express');
 /* const exphbs = require('express-handlebars'); */
 const morgan = require('morgan');
@@ -34,10 +34,10 @@ app.use(express.static(path.join(__dirname, '../public')));
  
 //descomenta para trabajar en local
 
-var port = app.get("port");
+/* var port = app.get("port");
 
 app.listen(port,(req, res)=>{
     console.log("Server on port",port)
-})
+}) */
 //descomenta para trabajar con firebase
-//exports.app = functions.https.onRequest(app);
+exports.app = functions.https.onRequest(app);
