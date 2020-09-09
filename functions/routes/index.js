@@ -1,9 +1,9 @@
 const express = require('express');
-var router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
 const multer = require('multer')
+var router = express.Router();
 
 let storage = multer.diskStorage({
   destination:(req, file, cb)=>{
@@ -44,8 +44,6 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 var stor = firebase.storage();
 
-
-
 router.get('/api/auth', (req, res)=>{ 
   if(auth.currentUser){
     var datos = { estado:true, email:auth.currentUser.email,uid:auth.currentUser.uid }
@@ -57,14 +55,11 @@ router.get('/api/auth', (req, res)=>{
   } 
 })
 
-
-
 router.get('/api/logout', (req, res)=>{
   auth.signOut().then(()=>{
     res.json({estado:true});
   }).catch(err => res.json({estado:false}))
 });
-
 
 router.post('/api/login', (req, res)=>{
   var e = req.body.email;
@@ -72,7 +67,6 @@ router.post('/api/login', (req, res)=>{
   auth.signInWithEmailAndPassword(e, p).then(()=>{
     console.log("Autenticado con exito");
     res.json({ mensaje:"autenticado con exito",estado:"true", email:auth.currentUser.email })
-    
   }).catch(function(error) {
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -87,9 +81,7 @@ router.post('/api/login', (req, res)=>{
 });
  
 router.post('/api/forgot', (req, res)=>{
-  
   var emailAddress = req.body.email;
-    
   auth.sendPasswordResetEmail(emailAddress).then(function() {
     res.json({mensaje:"Se a enviado un link de recuperacion a su orreo"});
   }).catch(function(error) {
@@ -134,7 +126,7 @@ router.post('/api/register', (req, res)=>{
     function guardar_tienda(id){
       db.collection("tiendas").doc(id).set({
         nombre:"",
-        urlUnico:"",
+        urlUnico:id,
         banner:""
 
       }).then(()=>{
@@ -149,25 +141,20 @@ router.post('/api/register', (req, res)=>{
   } 
 })
 
-/* router.get('/api/user/:id', function (req, res) {
-  res.send('user ' + req.params)
-}) */
-
 router.get('/api/mitienda/',(req,res)=>{
    var uid = auth.currentUser.uid
-  
-  /*res.send(uid)*/
     db.collection('tiendas').doc(uid).get()
   .then((doc)=>{
     res.json({
       nombre:doc.data().nombre,
-      urlunico:doc.data().urlunico,
+      urlunico:doc.data().urlUnico,
       banner:doc.data().banner
     })
   }) 
 })
 
 router.post('/api/guardartienda/nombre',(req,res)=>{
+  console.log(req.body)
   var id = req.body.id
   var nombre = req.body.nombre
    db.collection('tiendas').doc(id).update({
@@ -183,24 +170,89 @@ router.post('/api/guardartienda/url',(req,res)=>{
   var urlunico = req.body.urlunico
   //res.json({id:id,urlunico:urlunico})
    db.collection('tiendas').doc(id).update({
-    urlunico:urlunico
+    urlUnico:urlunico
   }).then(() =>{
     res.json({mensaje:"Guardado con exito",estado:true})
   })
   .catch(err => res.json({mensaje:err.message,estado:false}))
 })
-/* 
+
+router.get('/api/obtenerBanner/',(req,res)=>{
+  var id = auth.currentUser.uid
+  db.collection('tiendas').doc(id).get().then((doc)=>{
+    var banner = doc.data().bannerUrl
+    res.json({banner:banner})
+  })
+})
+
 router.post('/api/guardartienda/banner',(req,res)=>{
   var id = auth.currentUser.uid
-  var banner = req.body.banner
+  var bannerUrl = req.body.bannerUrl
+  var bannerName = req.body.bannerName
   //res.json({id:id,urlunico:urlunico})
    db.collection('tiendas').doc(id).update({
-    banner:banner
+    bannerUrl:bannerUrl,
+    bannerName,bannerName
   }).then(() =>{
     res.json({mensaje:"Guardado con exito",estado:true})
   })
   .catch(err => res.json({mensaje:err.message,estado:false}))
-}) */
+})
+
+router.post('/api/categorias/agregar',(req,res)=>{
+  var id = auth.currentUser.uid
+  //var id = "wHz8PB9S1SaORaNRz6annP6IJgQ2"
+  var categoria = req.body.categoria
+  db.collection('categorias').add({
+    categoria:categoria,
+    usuario:id
+  }).then(() =>{
+    res.json({mensaje:"Guardado con exito",estado:true})
+  })
+  .catch(err => res.json({mensaje:err.message,estado:false}))
+})
+
+router.post('/api/agregar/producto',(req,res)=>{
+  var id = auth.currentUser.uid
+  var producto = {
+      nombre:req.body.nombre,
+      usuario:id,
+      precio:req.body.precio,
+      categoria:req.body.categoria,
+      img0:req.body.img0,
+      img1:req.body.img1,
+      img2:req.body.img2,
+      img3:req.body.img3,
+      descripcion:req.body.descripcion
+  }
+  db.collection('productos').add(producto).then(()=>{
+    res.json({mensaje:"Producto agregado con exito"})
+  }).catch(error => res.json({mensaje:error}))
+})
+
+router.post('/api/delete/categorias/',(req,res)=>{
+  //console.log(req.body.data)
+  var id = req.body.id
+  db.collection("categorias").doc(id).delete().then(()=>{ 
+    res.json({mensaje:"eliminado"})
+  }).catch(error => res.json({mensaje:error}))
+})
+
+router.get('/api/get/categorias',(req,res)=>{
+  var id = auth.currentUser.uid
+  db.collection("categorias").where("usuario", "==", id).get()
+    .then((querySnapshot)=> {
+      var categorias = []
+      querySnapshot.forEach((doc)=> {
+        categorias.push( {id:doc.id,cat:doc.data().categoria} )    
+        })
+        res.json(categorias)
+    })
+    .catch(error =>
+        console.log("Error en la lectura de las categorias: ", error)
+    )
+})
+
 
 router.post('/api/urlunico', (req,res)=>{
   var url = req.body.url
@@ -217,43 +269,9 @@ router.post('/api/urlunico', (req,res)=>{
       res.json({estado:false})
       console.log("Error getting documents: ", error);
   });
-
-  /* db.collection('').where("","==",)
-  .then(()=> res.json({estado:true,mensaje:"disponible"}))
-  .catch(err => res.json({estado:false,mensaje:err})) */
 })
-/* 
-router.post('/api/banner', upload.single('image'),(req,res)=>{
-  console.log(req.file)
 
-  var exten = "TuTiendaEnLinea"+Math.floor(Math.random()*10000);
-  var url = req.file.originalname
-  var banner = exten+url
-  var ref = firebase.storage().ref('banners/'+banner)
-  ref.put(req.file)
-  .then(()=> {
-    console.log('Uploaded a blob or file!')
-    guardado(url,banner)
-  }).catch(err => console.log(`error al subir imagen: ${err}`))
-
-  function guardado(url,banner){
-    db.collection("tiendas").doc(auth.currentUser.uid).update({
-      url:url,
-      banner:banner
-    }).then(()=>{
-      res.json({estado:true,msg:"guardado con exito"})
-    })
-    .catch(function(error){
-      res.json({estado:false,msg:"No se a podido guardar por es siguiente error: "+error.message})
-      console.log("error al cargar banner: "+error);
-    })
-  } 
-
-
-}) */
-
-router.post('/api/cargarbanner',upload.single('file'),(req,res)=>{
-  
+/* router.post('/api/cargarbanner',upload.single('file'),(req,res)=>{
     let banner = req.file.path
     console.log(banner)
     db.collection("tiendas").doc(auth.currentUser.uid).update({
@@ -269,7 +287,27 @@ router.post('/api/cargarbanner',upload.single('file'),(req,res)=>{
     fs.readFile('./img/banners/123456.jpg',(err,file)=>{
       console.log(file)
     })
+}) */
 
+router.post('/api/get/tienda',(req,res)=>{
+  console.log("url pedido:"+req.body.id)
+  db.collection("tiendas").get()
+  .then(querySnapshot =>{
+    querySnapshot.forEach(doc =>{
+      if(doc.data().urlUnico == req.body.id){
+        res.json({
+          nombre:doc.data().nombre,
+          banner:doc.data().bannerUrl,
+          mensaje:true
+        })
+      }else{
+        res.json({mensaje:false})
+      }
+      
+    })
+  }).catch(error => res.json({mensaje:error.code}))
+
+  //res.send("nada")
 })
 
 router.get('/:id', function (req, res) {
@@ -278,14 +316,3 @@ router.get('/:id', function (req, res) {
 }) 
 
 module.exports = router;
-
-/* {
-  "fieldname":"file",
-  "originalname":"7b222f0f83c7a3fcc827a9029375e6e9.jpg",
-  "encoding":"7bit",
-  "mimetype":"image/jpeg",
-  "destination":"./img",
-  "filename":"file-15978656894867b222f0f83c7a3fcc827a9029375e6e9.jpg",
-  "path":"img\\file-15978656894867b222f0f83c7a3fcc827a9029375e6e9.jpg",
-  "size":90428
-} */

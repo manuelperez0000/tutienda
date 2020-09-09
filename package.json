@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon functions/index.js",
-    "start:":"node funcions/index.js",
+    "start:": "node funcions/index.js",
     "web": "webpack --mode development --watch",
     "build": "webpack --mode production"
   },
@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.11.0",
-    "babel": "^6.23.0"
+    "babel": "^6.23.0",
+    "vuejs-progress-bar": "^1.2.2"
   },
   "devDependencies": {
     "babel-loader": "^8.1.0",
