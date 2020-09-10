@@ -298,16 +298,50 @@ router.post('/api/get/tienda',(req,res)=>{
         res.json({
           nombre:doc.data().nombre,
           banner:doc.data().bannerUrl,
+          idcategorias:doc.id,
           mensaje:true
         })
       }else{
         res.json({mensaje:false})
       }
-      
     })
   }).catch(error => res.json({mensaje:error.code}))
+})
 
-  //res.send("nada")
+router.post('/api/get/catlist',(req,res)=>{
+  var id = req.body.id
+  db.collection("categorias").get().then(snapshot=>{
+    var categorias=[]
+    snapshot.forEach(doc =>{
+      if(doc.data().usuario == id){
+        categorias.push({
+          id:doc.id,
+          nombre:doc.data().categoria
+        })
+      }
+    })
+    res.json(categorias)
+  }) 
+})
+
+router.post('/api/get/prodlist',(req,res)=>{
+  var id = req.body.id
+  db.collection("productos").get().then(snapshot=>{
+    var productos=[]
+    snapshot.forEach(doc =>{
+      if(doc.data().usuario == id){
+        productos.push({
+          id:doc.id,
+          nombre:doc.data().nombre,
+          catprod:doc.data().categoria,
+          precio:doc.data().precio,
+          foto:doc.data().img0,
+          descripcion:doc.data().descripcion
+        })
+      }
+    })
+    res.json(productos)
+  }) 
 })
 
 router.get('/:id', function (req, res) {
