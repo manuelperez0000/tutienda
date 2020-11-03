@@ -181,7 +181,8 @@ router.get('/api/obtenerBanner/',(req,res)=>{
   var id = auth.currentUser.uid
   db.collection('tiendas').doc(id).get().then((doc)=>{
     var banner = doc.data().bannerUrl
-    res.json({banner:banner})
+    var name = doc.data().bannerName
+    res.json({name:name,banner:banner})
   })
 })
 
